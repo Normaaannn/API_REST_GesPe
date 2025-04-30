@@ -32,34 +32,21 @@ public class PedidoDetalleController {
 
     @GetMapping
     public ResponseEntity<List<PedidoDetalleDTO>> obtenerDetallesPorPedido(@PathVariable Long idPedido, Authentication authentication) {
-
-        String usernameAuth = authentication.getName(); // Usuario autenticado
+        String usernameAuth = authentication.getName();
 
         Optional<Pedido> optionalPedido = pedidoService.obtenerPorId(idPedido);
 
         if (optionalPedido.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Pedido no encontrado
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Pedido pedido = optionalPedido.get(); // Obtener el Pedido real
+        Pedido pedido = optionalPedido.get();
 
-        if (!pedido.getUsuarioCreador().getUsername().equals(usernameAuth)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // No tiene permisos
+        if (!pedido.getUsuarioCreador().getUsername().equals(usernameAuth) && !authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        List<PedidoDetalle> detalles = pedidoDetalleService.obtenerDetallesPorPedido(idPedido);
-
-        //Convertir cada PedidoDetalle a un PedidoDetalleDTO
-        List<PedidoDetalleDTO> detallesDTO = detalles.stream().map(detalle
-                -> new PedidoDetalleDTO(
-                        detalle.getProducto().getNombre(),
-                        detalle.getProducto().getDescripcion(),
-                        detalle.getProducto().getIva(),
-                        detalle.getPrecioNeto(),
-                        detalle.getCantidad(),
-                        detalle.getSubtotal()
-                )
-        ).collect(Collectors.toList());
+        List<PedidoDetalleDTO> detallesDTO = pedidoDetalleService.obtenerDetallesDTOporPedido(idPedido);
 
         return ResponseEntity.ok(detallesDTO);
     }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +33,6 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
-    @GetMapping
-    public List<Pedido> obtenerTodos() {
-        return pedidoService.obtenerTodos();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> obtenerPorId(@PathVariable Long id) {
         return pedidoService.obtenerPorId(id)
@@ -57,6 +53,11 @@ public class PedidoController {
 
         String username = authentication.getName();
         Pageable pageable = PageRequest.of(page - 1, size);
+        //Si es admin, le devuelve todos
+        if(authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")){
+            Page<Pedido> pedidos = pedidoService.obtenerTodosPageable(pageable);
+            return ResponseEntity.ok(pedidos);
+        }
         Page<Pedido> pedidos = pedidoService.obtenerPorUsuarioCreador(username, pageable);
 
         return ResponseEntity.ok(pedidos);

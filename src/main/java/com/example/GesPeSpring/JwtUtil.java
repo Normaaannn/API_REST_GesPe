@@ -10,10 +10,10 @@ import java.util.Date;
 public class JwtUtil {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000; // 15 minutos
-    private final long REFRESH_TOKEN_EXPIRATION = 20 * 24 * 60 * 60 * 1000; // 30 días
+    private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000; //15 minutos
+    private final long REFRESH_TOKEN_EXPIRATION = 20 * 24 * 60 * 60 * 1000; //30 dias
 
-    // Generar Access Token
+    //Generar Access Token
     public String generateAccessToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
@@ -24,7 +24,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Generar Refresh Token
+    //Generar Refresh Token
     public String generateRefreshToken(String username, String role) {
         Date expirationDate = new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION);
     System.out.println("Refresh token expiration date: " + expirationDate);
@@ -37,7 +37,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Validar token y extraer el username
+    //Validar token y extraer el username
     public String extractUsername(String token) {
         return Jwts.parser()
                 .setSigningKey(key)
@@ -56,7 +56,7 @@ public class JwtUtil {
                 .get("role", String.class);
     }
 
-    // Verificar si un token es válido
+    //Verificar si un token es valido
     public boolean isTokenValid(String token) {
         try {
             Jwts.parser()

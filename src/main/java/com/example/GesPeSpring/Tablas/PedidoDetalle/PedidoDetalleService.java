@@ -5,6 +5,7 @@ import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalle;
 import com.example.GesPeSpring.Tablas.Pedido.PedidoRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,22 @@ public class PedidoDetalleService {
     public List<PedidoDetalle> obtenerDetallesPorPedido(Long idPedido) {
         return pedidoDetalleRepository.findByPedidoId(idPedido);
     }
+    
+    public List<PedidoDetalleDTO> obtenerDetallesDTOporPedido(Long idPedido) {
+    List<PedidoDetalle> detalles = obtenerDetallesPorPedido(idPedido);
+
+    return detalles.stream().map(detalle ->
+        new PedidoDetalleDTO(
+            detalle.getProducto().getNombre(),
+            detalle.getProducto().getDescripcion(),
+            detalle.getProducto().getIva(),
+            detalle.getPrecioNeto(),
+            detalle.getCantidad(),
+            detalle.getSubtotal()
+        )
+    ).collect(Collectors.toList());
+}
+
 
     // Método para obtener todos los detalles de un producto
     public List<PedidoDetalle> obtenerDetallesPorProducto(Long idProducto) {

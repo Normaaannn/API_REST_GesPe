@@ -16,8 +16,8 @@ public class PedidoService {
         this.pedidoRepository = pedidoRepository;
     }
 
-    public List<Pedido> obtenerTodos() {
-        return pedidoRepository.findAll();
+    public Page<Pedido> obtenerTodosPageable(Pageable pageable) {
+        return pedidoRepository.findAll(pageable);
     }
 
     public Optional<Pedido> obtenerPorId(Long id) {
