@@ -101,21 +101,15 @@ public class ClienteController {
             return "Error actualizando cliente: " + e.getMessage();  // Si hay error, se devuelve un mensaje de error
         }
     }
-
-    // ✅ Solo ADMIN puede eliminar clientes
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public String eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
-        return "Cliente eliminado con éxito";
-    }
     
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<String> desactivarCliente(@PathVariable Long id) {
         clienteRepository.desactivarCliente(id);
         return ResponseEntity.ok("Cliente desactivado correctamente");
     }
     
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{id}/activar")
     public ResponseEntity<String> activarCliente(@PathVariable Long id) {
         clienteRepository.activarCliente(id);

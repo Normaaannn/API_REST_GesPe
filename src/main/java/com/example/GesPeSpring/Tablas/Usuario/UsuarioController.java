@@ -51,12 +51,12 @@ public class UsuarioController {
             @RequestBody Usuario usuario) {
 
         // Verificar si el correo ya está registrado
-        if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
+        if (usuarioRepository.findByEmail(usuario.getEmail()) != null || usuario.getEmail().isBlank() || usuario.getEmail() == null) {
             return "Correo existe";
         }
 
         // Verificar si el nombre de usuario ya está registrado
-        if (usuarioRepository.findByUsername(usuario.getUsername()) != null) {
+        if (usuarioRepository.findByUsername(usuario.getUsername()) != null || usuario.getUsername().isBlank() || usuario.getUsername() == null) {
             return "Usuario existe";
         }
 
