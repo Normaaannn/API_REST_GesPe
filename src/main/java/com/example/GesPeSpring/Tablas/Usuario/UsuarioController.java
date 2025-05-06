@@ -50,29 +50,29 @@ public class UsuarioController {
     public String registrarUsuario(
             @RequestBody Usuario usuario) {
 
-        // Verificar si el correo ya está registrado
+        //Verificar si el correo ya esta registrado
         if (usuarioRepository.findByEmail(usuario.getEmail()) != null || usuario.getEmail().isBlank() || usuario.getEmail() == null) {
             return "Correo existe";
         }
 
-        // Verificar si el nombre de usuario ya está registrado
+        //Verificar si el nombre de usuario ya esta registrado
         if (usuarioRepository.findByUsername(usuario.getUsername()) != null || usuario.getUsername().isBlank() || usuario.getUsername() == null) {
             return "Usuario existe";
         }
 
-        // Verificar si la contraseña es nula o vacía
+        //Verificar si la contraseña es nula o vacia
         if (usuario.getPasswordHash() == null || usuario.getPasswordHash().isBlank()) {
             return "La contraseña no puede estar vacía.";
         }
 
-        // Hashear la contraseña
+        //Hashear la contraseña
         String passwordHash = usuarioService.hashPassword(usuario.getPasswordHash());
 
-        // Crear un nuevo objeto Usuario
+        //Actualizar objeto usuario
         usuario.setPasswordHash(passwordHash);
         usuario.setRole("ROLE_GUEST");
 
-        // Guardar el usuario en la base de datos
+        //Guardar el usuario en la base de datos
         usuarioRepository.save(usuario);
 
         return "Registro completado";

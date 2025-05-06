@@ -1,12 +1,20 @@
 package com.example.GesPeSpring.Tablas.Pedido;
 
+import com.example.GesPeSpring.Tablas.InfoEmpresa.InfoEmpresa;
+import com.example.GesPeSpring.Tablas.InfoEmpresa.InfoEmpresaService;
+import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalle;
+import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleDTO;
+import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleService;
 import com.example.GesPeSpring.Tablas.Usuario.Usuario;
 import com.example.GesPeSpring.Tablas.Usuario.UsuarioRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,9 +33,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController {
 
     private final PedidoService pedidoService;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PedidoDetalleService pedidoDetalleService;
+
+    @Autowired
+    private InfoEmpresaService infoEmpresaService;
 
     public PedidoController(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
@@ -54,7 +68,7 @@ public class PedidoController {
         String username = authentication.getName();
         Pageable pageable = PageRequest.of(page - 1, size);
         //Si es admin, le devuelve todos
-        if(authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")){
+        if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
             Page<Pedido> pedidos = pedidoService.obtenerTodosPageable(pageable);
             return ResponseEntity.ok(pedidos);
         }
@@ -70,13 +84,30 @@ public class PedidoController {
 
     @PostMapping
     public ResponseEntity<Long> crearPedido(@RequestBody Pedido pedido, Authentication authentication) {
-        
+
         String usernameAuth = authentication.getName();
         Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
-        
+
         pedido.setUsuarioCreador(usuario);
         Pedido pedidoCreado = pedidoService.crearPedido(pedido);
         return ResponseEntity.ok(pedidoCreado.getId());
+    }
+
+    //factura
+    @GetMapping("/factura/{id}/pdf")
+    public ResponseEntity<byte[]> generarFactura(@PathVariable Long id) throws Exception {
+        Pedido pedido = pedidoService.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        List<PedidoDetalleDTO> detalles = pedidoDetalleService.obtenerDetallesDTOporPedido(id);
+        InfoEmpresa empresa = infoEmpresaService.obtenerInfoEmpresa()
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        byte[] pdf = pedidoService.generarPdfFactura(pedido, detalles, empresa);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=factura-" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
 }

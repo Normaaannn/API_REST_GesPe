@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"></meta>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                margin: 40px;
+            }
+            h1 {
+                text-align: center;
+            }
+            .header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 30px;
+            }
+            .header-section {
+                float: left;
+                width: 45%;
+                box-sizing: border-box;
+            }
+
+            .header-section-2 {
+                float: right;
+                width: 45%;
+                box-sizing: border-box;
+            }
+
+            .clearfix::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            .header h2 {
+                margin-bottom: 10px;
+                border-bottom: 1px solid #000;
+            }
+
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #000;
+                padding: 5px;
+                text-align: left;
+            }
+            .totals {
+                margin-top: 20px;
+                width: 100%;
+            }
+            .totals td {
+                padding: 5px;
+                text-align: right;
+            }
+            .footer {
+                margin-top: 40px;
+                border-top: 1px solid #000;
+                padding-top: 10px;
+                font-size: 10px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="header clearfix">
+            <div class="header-section">
+                <img th:src="'data:image/jpeg;base64,' + ${logoBase64}" alt="Logo" height="100"></img>
+                <h2>EMPRESA</h2>
+                <div><strong>Nombre:</strong> [[${empresa.nombre}]]</div>
+                <div><strong>Dirección:</strong> [[${empresa.direccion}]]</div>
+                <div><strong>Email:</strong> [[${empresa.email}]]</div>
+                <div><strong>Teléfono:</strong> [[${empresa.telefono}]]</div>
+                <div><strong>NIF:</strong> [[${empresa.nif}]]</div> 
+            </div>
+
+            <div class="header-section-2">
+                <h2>FACTURA</h2>
+                <div style="border-bottom: 1px solid #000"><strong>Nº Factura:</strong> [[${pedido.id}]]</div>
+                <div><strong>Fecha:</strong> [[${pedido.fechaEmision}]]</div>
+                <h2>CLIENTE</h2>
+                <strong>Nombre:</strong> [[${pedido.cliente.nombre}]]
+                <strong>Dirección:</strong> [[${pedido.cliente.direccion}]]
+                <strong>Email:</strong> [[${pedido.cliente.email}]]
+                <strong>Teléfono:</strong> [[${pedido.cliente.telefono}]]
+                <strong>NIF:</strong> [[${pedido.cliente.nif}]]
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Neto</th>
+                    <th>Cantidad</th>
+                    <th>I.V.A.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detalle : ${pedidoDetalles}">
+                    <td th:text="${detalle.nombreProducto}"></td>
+                    <td th:text="${detalle.precio}"></td>
+                    <td th:text="${detalle.cantidad}"></td>
+                    <td th:text="${detalle.iva}"></td>
+                    <td th:text="${detalle.subtotal}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="totals">
+            <tr>
+                <td><strong>Total Neto:</strong></td>
+                <td th:text="${totalNeto}"></td>
+            </tr>
+            <tr>
+                <td><strong>IVA (21%):</strong></td>
+                <td th:text="${iva}"></td>
+            </tr>
+            <tr>
+                <td><strong>Total Bruto:</strong></td>
+                <td th:text="${pedido.total}"></td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            <p>Gracias por su compra. Para más información, visite nuestro sitio web o contáctenos.</p>
+        </div>
+
+    </body>
+</html>
+
+
