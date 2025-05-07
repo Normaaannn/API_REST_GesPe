@@ -5,11 +5,8 @@
         <style>
             body {
                 font-family: Arial, sans-serif;
-                font-size: 12px;
-                margin: 40px;
-            }
-            h1 {
-                text-align: center;
+                font-size: 14px;
+                margin: 5px;
             }
             .header {
                 display: flex;
@@ -47,7 +44,7 @@
             th, td {
                 border: 1px solid #000;
                 padding: 5px;
-                text-align: left;
+                text-align: right;
             }
             .totals {
                 margin-top: 20px;
@@ -67,27 +64,35 @@
         </style>
     </head>
     <body>
+        <header class="header clearfix">
+            <div class="header-section">
+                <img th:src="'data:image/jpeg;base64,' + ${logoBase64}" alt="Logo" height="124"></img>
+            </div>
+            <div class="header-section-2">
+                <div style="text-align: right">
+                    <h1 style="font-size: 35px;">FACTURA</h1>
+                    <span style="font-size: 16px;"><strong>Nº Factura:</strong> [[${pedido.id}]]<br></br>
+                        <span style="border-top: 1px solid #000; font-size: 16px;"><strong>Fecha:</strong> [[${pedido.fechaEmision}]]</span></span>
+                </div>
+            </div>
+        </header>
 
         <div class="header clearfix">
             <div class="header-section">
-                <img th:src="'data:image/jpeg;base64,' + ${logoBase64}" alt="Logo" height="100"></img>
                 <h2>EMPRESA</h2>
-                <div><strong>Nombre:</strong> [[${empresa.nombre}]]</div>
-                <div><strong>Dirección:</strong> [[${empresa.direccion}]]</div>
-                <div><strong>Email:</strong> [[${empresa.email}]]</div>
-                <div><strong>Teléfono:</strong> [[${empresa.telefono}]]</div>
-                <div><strong>NIF:</strong> [[${empresa.nif}]]</div> 
+                <strong>Nombre:</strong> [[${empresa.nombre}]]<br></br>
+                <strong>Dirección:</strong> [[${empresa.direccion}]]<br></br>
+                <strong>Email:</strong> [[${empresa.email}]]<br></br>
+                <strong>Teléfono:</strong> [[${empresa.telefono}]]<br></br>
+                <strong>NIF:</strong> [[${empresa.nif}]]
             </div>
 
             <div class="header-section-2">
-                <h2>FACTURA</h2>
-                <div style="border-bottom: 1px solid #000"><strong>Nº Factura:</strong> [[${pedido.id}]]</div>
-                <div><strong>Fecha:</strong> [[${pedido.fechaEmision}]]</div>
                 <h2>CLIENTE</h2>
-                <strong>Nombre:</strong> [[${pedido.cliente.nombre}]]
-                <strong>Dirección:</strong> [[${pedido.cliente.direccion}]]
-                <strong>Email:</strong> [[${pedido.cliente.email}]]
-                <strong>Teléfono:</strong> [[${pedido.cliente.telefono}]]
+                <strong>Nombre:</strong> [[${pedido.cliente.nombre}]]<br></br>
+                <strong>Dirección:</strong> [[${pedido.cliente.direccion}]]<br></br>
+                <strong>Email:</strong> [[${pedido.cliente.email}]]<br></br>
+                <strong>Teléfono:</strong> [[${pedido.cliente.telefono}]]<br></br>
                 <strong>NIF:</strong> [[${pedido.cliente.nif}]]
             </div>
         </div>
@@ -95,8 +100,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th>Precio Neto</th>
+                    <th style="text-align: left">Producto</th>
+                    <th style="text-align: left">Precio Unitario (I.V.A. Excluido)</th>
                     <th>Cantidad</th>
                     <th>I.V.A.</th>
                     <th>Subtotal</th>
@@ -104,29 +109,21 @@
             </thead>
             <tbody>
                 <tr th:each="detalle : ${pedidoDetalles}">
-                    <td th:text="${detalle.nombreProducto}"></td>
-                    <td th:text="${detalle.precio}"></td>
+                    <td style="text-align: left" th:text="${detalle.nombreProducto}"></td>
+                    <td style="text-align: left" th:text="${#numbers.formatDecimal(detalle.precio, 2, 2)} + ' €'"></td>
                     <td th:text="${detalle.cantidad}"></td>
-                    <td th:text="${detalle.iva}"></td>
-                    <td th:text="${detalle.subtotal}"></td>
+                    <td th:text="${#numbers.formatDecimal(detalle.iva, 2, 2)} + ' %'"></td>
+                    <td th:text="${#numbers.formatDecimal(detalle.subtotal, 2, 2)} + ' €'"></td>
                 </tr>
             </tbody>
         </table>
 
-        <table class="totals">
-            <tr>
-                <td><strong>Total Neto:</strong></td>
-                <td th:text="${totalNeto}"></td>
-            </tr>
-            <tr>
-                <td><strong>IVA (21%):</strong></td>
-                <td th:text="${iva}"></td>
-            </tr>
-            <tr>
-                <td><strong>Total Bruto:</strong></td>
-                <td th:text="${pedido.total}"></td>
-            </tr>
-        </table>
+        <div style="text-align: right">
+            <br></br>
+            <h2 style="margin-bottom: 4px;">Total Neto &nbsp;&nbsp;&nbsp;[[${#numbers.formatDecimal(totalNeto, 2, 2)}]] €</h2>
+            <h2 style="margin-top: 0;">Total I.V.A. &nbsp;&nbsp;&nbsp;[[${#numbers.formatDecimal(totalIVA, 2, 2)}]] €</h2>
+            <h1>Total Factura &nbsp;&nbsp;&nbsp;[[${#numbers.formatDecimal(pedido.total, 2, 2)}]] €</h1>
+        </div>
 
         <div class="footer">
             <p>Gracias por su compra. Para más información, visite nuestro sitio web o contáctenos.</p>

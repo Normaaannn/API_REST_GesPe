@@ -56,15 +56,26 @@ public class PedidoService {
 
     public byte[] generarPdfFactura(Pedido pedido, List<PedidoDetalleDTO> pedidoDetalles, InfoEmpresa empresa) throws Exception {
         Context context = new Context();
-        // Ruta absoluta al archivo logo.jpg dentro de templates
+        //Ruta absoluta al archivo logo.jpg dentro de templates
         byte[] logoBytes = Files.readAllBytes(Paths.get("src/main/resources/templates/logo.jpg"));
         String logoBase64 = Base64.getEncoder().encodeToString(logoBytes);
 
-// Pásalo al contexto Thymeleaf
+        //Saco el total neto y de impuestos del pedido entero
+        float totalNeto = 0;
+        float totalIVA = 0;
+        for (PedidoDetalleDTO detalle : pedidoDetalles) {
+            float neto;
+            neto = detalle.getSubtotal() / (1 + (detalle.getIva() / 100));
+            totalNeto += neto;
+            totalIVA += detalle.getSubtotal() - neto;
+        }
+
         context.setVariable("logoBase64", logoBase64);
         context.setVariable("pedido", pedido);
         context.setVariable("pedidoDetalles", pedidoDetalles);
         context.setVariable("empresa", empresa);
+        context.setVariable("totalNeto", totalNeto);
+        context.setVariable("totalIVA", totalIVA);
 
         String html = templateEngine.process("factura", context);
 
