@@ -28,6 +28,7 @@ public class InfoEmpresaController {
         return infoEmpresaService.obtenerInfoEmpresa();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping
     public String actualizarInfoEmpresa(@RequestBody Map<String, Object> updates) {
         InfoEmpresa infoEmpresa = infoEmpresaService.obtenerInfoEmpresa()
@@ -38,9 +39,9 @@ public class InfoEmpresaController {
         try {
             objectMapper.updateValue(infoEmpresa, updates);  // Solo se actualizan los campos enviados
             infoEmpresaRepository.save(infoEmpresa);
-            return "Cliente actualizado";  // Solo se devuelve un mensaje de texto
+            return "Información actualizada";  // Solo se devuelve un mensaje de texto
         } catch (Exception e) {
-            return "Error actualizando cliente: " + e.getMessage();  // Si hay error, se devuelve un mensaje de error
+            return "Error actualizando información: " + e.getMessage();  // Si hay error, se devuelve un mensaje de error
         }
     }
     

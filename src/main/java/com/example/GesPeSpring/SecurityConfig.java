@@ -1,4 +1,3 @@
-
 package com.example.GesPeSpring;
 
 import org.springframework.context.annotation.Bean;
@@ -25,15 +24,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) //Desactivar CSRF (usualmente para APIs)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //No usar sesiones en el servidor
-            .authorizeHttpRequests(auth -> auth
+                .csrf(csrf -> csrf.disable()) //Desactivar CSRF (usualmente para APIs)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //No usar sesiones en el servidor
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //Permitir OPTIONS para solicitudes preflight
                 .requestMatchers("/auth/login", "/auth/refresh", "/usuario/register", "/recoverPassword").permitAll() // Permitir acceso a login y refresh sin autenticación
+                .requestMatchers("/info_empresa").hasRole("ADMIN")
                 .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().denyAll() //Todo lo demás requiere autenticación
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //Agregar el filtro JWT antes del filtro de autenticación de usuario
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //Agregar el filtro JWT antes del filtro de autenticación de usuario
 
         return http.build();
     }
@@ -48,4 +48,3 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
-

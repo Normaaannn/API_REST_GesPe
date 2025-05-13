@@ -24,6 +24,16 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     Page<Producto> findAll(Pageable pageable);
 
+    @Query("SELECT p FROM Producto p WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+    Page<Producto> buscarPorNombre(@Param("nombre") String nombre, Pageable pageable);
+    
     @Query("SELECT p FROM Producto p WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) AND p.activo = true")
-    Page<Producto> buscarPorNombreActivoTrue(@Param("nombre") String nombre, Pageable pageable);
+    Page<Producto> buscarPorNombreAndActivo(@Param("nombre") String nombre, Pageable pageable);
+    
+    @Query("SELECT p FROM Producto p WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) AND p.activo = false")
+    Page<Producto> buscarPorNombreAndInactivo(@Param("nombre") String nombre, Pageable pageable);
+    
+    Page<Producto> findByActivoTrue(Pageable pageable);
+    
+    Page<Producto> findByActivoFalse(Pageable pageable);
 }

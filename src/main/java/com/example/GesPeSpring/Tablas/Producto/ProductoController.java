@@ -13,7 +13,7 @@ public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
-    
+
     @Autowired
     private ProductoRepository productoRepository;
 
@@ -29,14 +29,34 @@ public class ProductoController {
     public ResponseEntity<Iterable<Producto>> obtenerProductos() {
         return ResponseEntity.ok(productoService.obtenerProductos());
     }
-    
+
     @GetMapping("/page/{pagina}")
-    public Page<Producto> obtenerProductosPage(@PathVariable int pagina) {
+    public Page<Producto> obtenerProductos(@PathVariable int pagina) {
         return productoService.obtenerProductosPaginados(pagina - 1);
     }
     
-    @GetMapping("/buscar/{texto}/{page}")
+    @GetMapping("activos/page/{pagina}")
+    public Page<Producto> obtenerProductosActivos(@PathVariable int pagina) {
+        return productoService.obtenerProductosActivosPaginados(pagina - 1);
+    }
+    
+    @GetMapping("inactivos/page/{pagina}")
+    public Page<Producto> obtenerProductosInactivos(@PathVariable int pagina) {
+        return productoService.obtenerProductosInactivosPaginados(pagina - 1);
+    }
+
+    @GetMapping("/buscar/{texto}/page/{page}")
     public Page<ProductoDTO> buscarProductos(@PathVariable String texto, @PathVariable int page) {
+        return productoService.buscarProductos(texto, page - 1);
+    }
+
+    @GetMapping("/buscar/activos/{texto}/page/{page}")
+    public Page<ProductoDTO> buscarProductosActivos(@PathVariable String texto, @PathVariable int page) {
+        return productoService.buscarProductos(texto, page - 1);
+    }
+
+    @GetMapping("/buscar/inactivos/{texto}/page/{page}")
+    public Page<ProductoDTO> buscarProductosInactivos(@PathVariable String texto, @PathVariable int page) {
         return productoService.buscarProductos(texto, page - 1);
     }
 
@@ -49,7 +69,7 @@ public class ProductoController {
         }
         return ResponseEntity.ok(producto);
     }
-    
+
     @PatchMapping("/{id}")
     public String actualizarParcialProducto(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         Producto producto = productoRepository.findById(id)
@@ -71,7 +91,7 @@ public class ProductoController {
         productoRepository.desactivarProducto(id);
         return ResponseEntity.ok("Producto desactivado correctamente");
     }
-    
+
     @PatchMapping("/{id}/activar")
     public ResponseEntity<String> activarProducto(@PathVariable Long id) {
         productoRepository.activarProducto(id);

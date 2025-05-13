@@ -1,9 +1,18 @@
 package com.example.GesPeSpring.Tablas.Usuario;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +24,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/page/{pagina}")
     public Page<Usuario> obtenerClientes(@PathVariable int pagina) {
@@ -76,6 +88,56 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
 
         return "Registro completado";
+    }
+
+    @PatchMapping("/{id}/banear")
+    public ResponseEntity<String> quitarRolUsuario(@PathVariable Long id) {
+        usuarioRepository.banearUsuario(id);
+        return ResponseEntity.ok("Usuario baneado correctamente");
+    }
+
+    @PatchMapping("/{id}/darRolUsuario")
+    public ResponseEntity<String> darRolUsuario(@PathVariable Long id) {
+        usuarioRepository.darRolUsuario(id);
+        return ResponseEntity.ok("Usuario activado correctamente");
+    }
+
+    @PatchMapping("/actualizarPassword")
+    public ResponseEntity<String> actualizarPassword(@RequestBody Map<String, String> update, Authentication authentication) {
+        if (update == null || update.isEmpty()) {
+            return ResponseEntity.badRequest().body("Los datos no pueden estar vacíos.");
+        }
+
+        String oldPassword = update.get("password");
+        String newPassword = update.get("newPassword");
+
+        if (oldPassword == null || newPassword == null) {
+            return ResponseEntity.badRequest().body("Debes proporcionar la contraseña actual y la nueva.");
+        }
+
+        try {
+            // Verifica que la contraseña actual sea correcta
+            Authentication authCheck = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authentication.getName(), oldPassword)
+            );
+
+            if (!authCheck.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña actual incorrecta.");
+            }
+
+            // Actualiza la contraseña
+            Usuario usuario = usuarioRepository.findByUsername(authentication.getName());
+            String passwordHash = usuarioService.hashPassword(newPassword);
+            usuario.setPasswordHash(passwordHash);
+            usuarioRepository.save(usuario);
+
+                return ResponseEntity.ok("Contraseña actualizada");
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña actual incorrecta.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error actualizando la contraseña: " + e.getMessage());
+        }
     }
 
 }
