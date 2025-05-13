@@ -7,13 +7,17 @@ import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleDTO;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -45,9 +49,28 @@ public class PedidoService {
     public Page<Pedido> obtenerPorUsuarioCreador(String username, Pageable pageable) {
         return pedidoRepository.findByUsuarioCreador_Username(username, pageable);
     }
+    
+    public Page<Pedido> buscarPedidosFechaBetween(Pageable pageable, int year1, int month1, int year2, int month2) {
+        LocalDate startDate = LocalDate.of(year1, month1, 1);
+        LocalDate endDate = LocalDate.of(year2, month2, 1)
+                .plusMonths(1)
+                .minusDays(1);
 
-    public List<Pedido> obtenerPorMesYAnio(int year, int month) {
-        return pedidoRepository.findByMonthAndYear(year, month);
+        return pedidoRepository.findByFechaBetween(startDate, endDate, pageable);
+    }
+    
+    public Page<Pedido> buscarPedidosUsuarioFechaBetween(
+            Pageable pageable,
+            String username,
+            int year1, int month1,
+            int year2, int month2
+    ) {
+        LocalDate startDate = LocalDate.of(year1, month1, 1);
+        LocalDate endDate = LocalDate.of(year2, month2, 1)
+                .plusMonths(1)
+                .minusDays(1); // último día del mes final
+
+        return pedidoRepository.findByUsuarioCreadorAndFechaBetween(username, startDate, endDate, pageable);
     }
 
     public Pedido crearPedido(Pedido pedido) {

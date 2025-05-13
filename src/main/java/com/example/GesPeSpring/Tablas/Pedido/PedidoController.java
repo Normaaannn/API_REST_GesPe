@@ -7,12 +7,15 @@ import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleDTO;
 import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleService;
 import com.example.GesPeSpring.Tablas.Usuario.Usuario;
 import com.example.GesPeSpring.Tablas.Usuario.UsuarioRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -76,11 +79,40 @@ public class PedidoController {
 
         return ResponseEntity.ok(pedidos);
     }
-
-    @GetMapping("/fecha")
-    public List<Pedido> obtenerPorMesYAnio(@RequestParam int year, @RequestParam int month) {
-        return pedidoService.obtenerPorMesYAnio(year, month);
+    
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<Pedido>> buscarPedidos(
+            Authentication authentication,
+            @RequestParam int year1,
+            @RequestParam int month1,
+            @RequestParam int year2,
+            @RequestParam int month2,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        String username = authentication.getName();
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
+            Page<Pedido> pedidos = pedidoService.buscarPedidosFechaBetween(pageable, year1, month1, year2, month2);
+            return ResponseEntity.ok(pedidos);
+        }       
+        Page<Pedido> pedidos = pedidoService.buscarPedidosUsuarioFechaBetween(pageable, username, year1, month1, year2, month2);
+        return ResponseEntity.ok(pedidos);
     }
+
+    
+    /*
+    ///pedido/fechaBetween?year1=2023&month1=10&year2=2025&month2=5
+    @GetMapping("/fechaBetween")
+    public ResponseEntity<List<Pedido>> obtenerPedidosFechaBetween(
+        @RequestParam int year1,
+        @RequestParam int month1,
+        @RequestParam int year2,
+        @RequestParam int month2
+    ) {
+        List<Pedido> pedidos = pedidoService.buscarPedidosFechaBetween(year1, month1, year2, month2);
+        return ResponseEntity.ok(pedidos);
+    }*/
 
     @PostMapping
     public ResponseEntity<Long> crearPedido(@RequestBody Pedido pedido, Authentication authentication) {
