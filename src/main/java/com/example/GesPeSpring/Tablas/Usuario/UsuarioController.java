@@ -35,32 +35,32 @@ public class UsuarioController {
     private EmailService emailService;
 
     @GetMapping("/page/{pagina}")
-    public Page<Usuario> obtenerClientes(@PathVariable int pagina) {
+    public Page<Usuario> obtenerUsuarios(@PathVariable int pagina) {
         return usuarioService.obtenerUsuariosPaginados(pagina - 1);
     }
 
     @GetMapping("/user/page/{pagina}")
-    public Page<Usuario> obtenerClientesUser(@PathVariable int pagina) {
+    public Page<Usuario> obtenerUsuariosUser(@PathVariable int pagina) {
         return usuarioService.obtenerUsuariosRolePaginados("ROLE_USER", pagina - 1);
     }
 
     @GetMapping("/guest/page/{pagina}")
-    public Page<Usuario> obtenerClientesGuest(@PathVariable int pagina) {
+    public Page<Usuario> obtenerUsuariosGuest(@PathVariable int pagina) {
         return usuarioService.obtenerUsuariosRolePaginados("ROLE_GUEST", pagina - 1);
     }
 
     @GetMapping("/buscar/{texto}/page/{page}")
-    public Page<Usuario> buscarClientes(@PathVariable String texto, @PathVariable int page) {
+    public Page<Usuario> buscarUsuarios(@PathVariable String texto, @PathVariable int page) {
         return usuarioService.buscarUsuarios(texto, page - 1);
     }
 
     @GetMapping("/buscar/user/{texto}/page/{page}")
-    public Page<Usuario> buscarClientesUser(@PathVariable String texto, @PathVariable int page) {
+    public Page<Usuario> buscarUsuariosUser(@PathVariable String texto, @PathVariable int page) {
         return usuarioService.buscarUsuariosRole(texto, "ROLE_USER", page - 1);
     }
 
     @GetMapping("/buscar/guest/{texto}/page/{page}")
-    public Page<Usuario> buscarClientesGuest(@PathVariable String texto, @PathVariable int page) {
+    public Page<Usuario> buscarUsuariosGuest(@PathVariable String texto, @PathVariable int page) {
         return usuarioService.buscarUsuariosRole(texto, "ROLE_GUEST", page - 1);
     }
 
@@ -150,7 +150,7 @@ public class UsuarioController {
     public ResponseEntity<?> forgotPassword(@RequestBody PasswordRecoveryDTO dto) {
         Usuario user = usuarioRepository.findByEmail(dto.getEmail());
         if (user == null) {
-            return ResponseEntity.badRequest().body("Email not found.");
+            return ResponseEntity.badRequest().body("Email no encontrado");
         }
 
         String token = UUID.randomUUID().toString();
@@ -168,7 +168,7 @@ public class UsuarioController {
     public ResponseEntity<?> resetPassword(@RequestBody PasswordRecoveryDTO dto) {
         Usuario user = usuarioRepository.findByResetToken(dto.getToken());
         if (user == null || user.getTokenExpiration().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body("Invalid or expired token.");
+            return ResponseEntity.badRequest().body("Token no válido o expirado");
         }
 
         String passwordHash = usuarioService.hashPassword(dto.getNewPassword());

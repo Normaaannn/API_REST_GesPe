@@ -24,28 +24,22 @@ public class ProductoController {
         return "Producto añadido";
     }
 
-    // Obtener todos los productos
-    @GetMapping
-    public ResponseEntity<Iterable<Producto>> obtenerProductos() {
-        return ResponseEntity.ok(productoService.obtenerProductos());
-    }
-
-    @GetMapping("/page/{pagina}")
+    @GetMapping("/todos/page/{pagina}")
     public Page<Producto> obtenerProductos(@PathVariable int pagina) {
         return productoService.obtenerProductosPaginados(pagina - 1);
     }
-    
-    @GetMapping("activos/page/{pagina}")
+
+    @GetMapping("/activos/page/{pagina}")
     public Page<Producto> obtenerProductosActivos(@PathVariable int pagina) {
         return productoService.obtenerProductosActivosPaginados(pagina - 1);
     }
-    
-    @GetMapping("inactivos/page/{pagina}")
+
+    @GetMapping("/inactivos/page/{pagina}")
     public Page<Producto> obtenerProductosInactivos(@PathVariable int pagina) {
         return productoService.obtenerProductosInactivosPaginados(pagina - 1);
     }
 
-    @GetMapping("/buscar/{texto}/page/{page}")
+    @GetMapping("/buscar/todos/{texto}/page/{page}")
     public Page<ProductoDTO> buscarProductos(@PathVariable String texto, @PathVariable int page) {
         return productoService.buscarProductos(texto, page - 1);
     }

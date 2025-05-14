@@ -21,12 +21,7 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @GetMapping
-    public List<Cliente> listarClientes() {
-        return clienteService.listarClientes();
-    }
-
-    @GetMapping("/page/{pagina}")
+    @GetMapping("/todos/page/{pagina}")
     public Page<Cliente> obtenerClientes(@PathVariable int pagina) {
         return clienteService.obtenerClientesPaginados(pagina - 1);
     }
@@ -41,7 +36,7 @@ public class ClienteController {
         return clienteService.obtenerClientesInactivosPaginados(pagina - 1);
     }
 
-    @GetMapping("/buscar/{texto}/page/{page}")
+    @GetMapping("/buscar/todos/{texto}/page/{page}")
     public Page<Cliente> buscarClientes(@PathVariable String texto, @PathVariable int page) {
         return clienteService.buscarClientes(texto, page - 1);
     }

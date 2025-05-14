@@ -28,8 +28,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //No usar sesiones en el servidor
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //Permitir OPTIONS para solicitudes preflight
-                .requestMatchers("/auth/login", "/auth/refresh", "/usuario/register", "/usuario/forgot-password", "/usuario/reset-password").permitAll() // Permitir acceso a login y refresh sin autenticación
-                .requestMatchers("/info_empresa").hasRole("ADMIN")
+                .requestMatchers("/auth/login", "/auth/refresh", "/usuario/register", "/usuario/forgot-password", "/usuario/reset-password").permitAll() //Permitir acceso a login y refresh sin autenticación
+                .requestMatchers("/usuario/actualizarPassword").hasAnyRole("ADMIN", "USER", "GUEST")
+                .requestMatchers("/info_empresa/**", "/usuario/**").hasRole("ADMIN")
+                .requestMatchers("/producto/todos/**", "/cliente/todos/**").hasRole("ADMIN")
+                .requestMatchers("/producto/inactivos/**", "/cliente/inactivos/**").hasRole("ADMIN")
+                .requestMatchers("/producto/buscar/todos/**", "/cliente/buscar/todos/**").hasRole("ADMIN")
+                .requestMatchers("/producto/buscar/inactivos/**", "/cliente/buscar/inactivos/**").hasRole("ADMIN")
                 .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().denyAll() //Todo lo demás requiere autenticación
                 )
