@@ -1,7 +1,10 @@
 package com.example.GesPeSpring.Tablas.Usuario;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +30,9 @@ public class UsuarioController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/page/{pagina}")
     public Page<Usuario> obtenerClientes(@PathVariable int pagina) {
@@ -131,13 +137,47 @@ public class UsuarioController {
             usuario.setPasswordHash(passwordHash);
             usuarioRepository.save(usuario);
 
-                return ResponseEntity.ok("Contraseña actualizada");
+            return ResponseEntity.ok("Contraseña actualizada");
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña actual incorrecta.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error actualizando la contraseña: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody PasswordRecoveryDTO dto) {
+        Usuario user = usuarioRepository.findByEmail(dto.getEmail());
+        if (user == null) {
+            return ResponseEntity.badRequest().body("Email not found.");
+        }
+
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setTokenExpiration(LocalDateTime.now().plusHours(1));
+        usuarioRepository.save(user);
+
+        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+        emailService.sendResetLink(dto.getEmail(), resetLink);
+
+        return ResponseEntity.ok("Link de recuperación enviado");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordRecoveryDTO dto) {
+        Usuario user = usuarioRepository.findByResetToken(dto.getToken());
+        if (user == null || user.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body("Invalid or expired token.");
+        }
+
+        String passwordHash = usuarioService.hashPassword(dto.getNewPassword());
+        user.setPasswordHash(passwordHash);
+        user.setResetToken(null);
+        user.setTokenExpiration(null);
+        usuarioRepository.save(user);
+
+        return ResponseEntity.ok("Contraseña actualizada");
     }
 
 }

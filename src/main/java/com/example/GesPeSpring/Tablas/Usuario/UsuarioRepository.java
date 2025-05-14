@@ -16,6 +16,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Usuario findByEmail(String email);
     
+    Usuario findByResetToken(String resetToken);
+    
     @Query("SELECT u FROM Usuario u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :parametro, '%')) "
             + "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :parametro, '%'))")
     Page<Usuario> buscarPorParametro(@Param("parametro") String parametro, Pageable pageable);

@@ -21,8 +21,6 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    // ✅ Solo usuarios logueados pueden ver los clientes (ROLE_USER o ROLE_ADMIN)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public List<Cliente> listarClientes() {
         return clienteService.listarClientes();
@@ -32,12 +30,12 @@ public class ClienteController {
     public Page<Cliente> obtenerClientes(@PathVariable int pagina) {
         return clienteService.obtenerClientesPaginados(pagina - 1);
     }
-    
+
     @GetMapping("activos/page/{pagina}")
     public Page<Cliente> obtenerClientesActivos(@PathVariable int pagina) {
         return clienteService.obtenerClientesActivosPaginados(pagina - 1);
     }
-    
+
     @GetMapping("inactivos/page/{pagina}")
     public Page<Cliente> obtenerClientesInactivos(@PathVariable int pagina) {
         return clienteService.obtenerClientesInactivosPaginados(pagina - 1);
@@ -47,26 +45,22 @@ public class ClienteController {
     public Page<Cliente> buscarClientes(@PathVariable String texto, @PathVariable int page) {
         return clienteService.buscarClientes(texto, page - 1);
     }
-    
+
     @GetMapping("/buscar/activos/{texto}/page/{page}")
     public Page<Cliente> buscarClientesActivos(@PathVariable String texto, @PathVariable int page) {
         return clienteService.buscarClientesActivos(texto, page - 1);
     }
-    
+
     @GetMapping("/buscar/inactivos/{texto}/page/{page}")
     public Page<Cliente> buscarClientesInactivos(@PathVariable String texto, @PathVariable int page) {
         return clienteService.buscarClientesInactivos(texto, page - 1);
     }
 
-    // ✅ Solo usuarios logueados pueden ver un cliente por ID
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
     public Optional<Cliente> obtenerCliente(@PathVariable Long id) {
         return clienteService.obtenerClientePorId(id);
     }
 
-    // ✅ Solo ADMIN puede crear clientes
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public String crearCliente(@RequestBody Cliente cliente) {
 
@@ -78,8 +72,6 @@ public class ClienteController {
         return "Cliente añadido";
     }
 
-    // ✅ Solo ADMIN puede actualizar clientes
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         cliente.setId(id);
@@ -101,15 +93,13 @@ public class ClienteController {
             return "Error actualizando cliente: " + e.getMessage();  // Si hay error, se devuelve un mensaje de error
         }
     }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')")
+
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<String> desactivarCliente(@PathVariable Long id) {
         clienteRepository.desactivarCliente(id);
         return ResponseEntity.ok("Cliente desactivado correctamente");
     }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')")
+
     @PatchMapping("/{id}/activar")
     public ResponseEntity<String> activarCliente(@PathVariable Long id) {
         clienteRepository.activarCliente(id);

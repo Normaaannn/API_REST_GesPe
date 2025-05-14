@@ -22,13 +22,11 @@ public class InfoEmpresaController {
     @Autowired
     private InfoEmpresaService infoEmpresaService;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public Optional<InfoEmpresa> obtenerInfoEmpresa() {
         return infoEmpresaService.obtenerInfoEmpresa();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping
     public String actualizarInfoEmpresa(@RequestBody Map<String, Object> updates) {
         InfoEmpresa infoEmpresa = infoEmpresaService.obtenerInfoEmpresa()
@@ -45,7 +43,6 @@ public class InfoEmpresaController {
         }
     }
     
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/{id}")
     public Optional<InfoEmpresa> obtenerInfoEmpresaPorId(@PathVariable Long id) {
         return infoEmpresaRepository.findById(id);

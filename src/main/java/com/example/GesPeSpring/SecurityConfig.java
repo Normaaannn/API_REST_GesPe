@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //No usar sesiones en el servidor
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //Permitir OPTIONS para solicitudes preflight
-                .requestMatchers("/auth/login", "/auth/refresh", "/usuario/register", "/recoverPassword").permitAll() // Permitir acceso a login y refresh sin autenticación
+                .requestMatchers("/auth/login", "/auth/refresh", "/usuario/register", "/usuario/forgot-password", "/usuario/reset-password").permitAll() // Permitir acceso a login y refresh sin autenticación
                 .requestMatchers("/info_empresa").hasRole("ADMIN")
                 .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().denyAll() //Todo lo demás requiere autenticación
