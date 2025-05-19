@@ -80,7 +80,7 @@
         <div class="header clearfix">
             <div class="header-section">
                 <h2>EMPRESA</h2>
-                <strong>Nombre:</strong> [[${empresa.nombre}]]<br></br>
+                <strong>Nombre:</strong> [[${empresa.nombre}]] [[${empresa.apellidos}]]<br></br>
                 <strong>Dirección:</strong> [[${empresa.direccion}]]<br></br>
                 <strong>Email:</strong> [[${empresa.email}]]<br></br>
                 <strong>Teléfono:</strong> [[${empresa.telefono}]]<br></br>
@@ -89,11 +89,11 @@
 
             <div class="header-section-2">
                 <h2>CLIENTE</h2>
-                <strong>Nombre:</strong> [[${pedido.cliente.nombre}]]<br></br>
+                <strong>Nombre:</strong> [[${pedido.cliente.nombre}]] [[${pedido.cliente.apellidos}]]<br></br>
                 <strong>Dirección:</strong> [[${pedido.cliente.direccion}]]<br></br>
                 <strong>Email:</strong> [[${pedido.cliente.email}]]<br></br>
                 <strong>Teléfono:</strong> [[${pedido.cliente.telefono}]]<br></br>
-                <strong>NIF:</strong> [[${pedido.cliente.nif}]]
+                <strong>NIF/DNI:</strong> [[${pedido.cliente.nif}]]
             </div>
         </div>
 
@@ -101,7 +101,7 @@
             <thead>
                 <tr>
                     <th style="text-align: left">Producto</th>
-                    <th style="text-align: left">Precio Unitario (I.V.A. Excluido)</th>
+                    <th>Precio Unitario (I.V.A. Excluido)</th>
                     <th>Cantidad</th>
                     <th>I.V.A.</th>
                     <th>Subtotal</th>
@@ -110,10 +110,10 @@
             <tbody>
                 <tr th:each="detalle : ${pedidoDetalles}">
                     <td style="text-align: left" th:text="${detalle.nombreProducto}"></td>
-                    <td style="text-align: left" th:text="${#numbers.formatDecimal(detalle.precio, 2, 2)} + ' €'"></td>
+                    <td th:text="${#numbers.formatDecimal(detalle.precio, 1, 2)} + ' €'"></td>
                     <td th:text="${detalle.cantidad}"></td>
-                    <td th:text="${#numbers.formatDecimal(detalle.iva, 2, 2)} + ' %'"></td>
-                    <td th:text="${#numbers.formatDecimal(detalle.subtotal, 2, 2)} + ' €'"></td>
+                    <td th:text="${#numbers.formatDecimal(detalle.iva, 1, 2)} + ' %'"></td>
+                    <td th:text="${#numbers.formatDecimal(detalle.subtotal, 1, 2)} + ' €'"></td>
                 </tr>
             </tbody>
         </table>

@@ -29,6 +29,8 @@ public class Usuario {
 
     private String role; //ROLE_USER, ROLE_ADMIN
     
+    private String avatarUrl;
+    
     //Tokens para reiniciar la contraseña
     private String resetToken;
     private LocalDateTime tokenExpiration;

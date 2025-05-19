@@ -180,4 +180,25 @@ public class UsuarioController {
         return ResponseEntity.ok("Contraseña actualizada");
     }
 
+    @PatchMapping("/actualizarAvatar")
+    public ResponseEntity<String> actualizarAvatar(@RequestBody Map<String, String> update, Authentication authentication) {
+
+        if (update == null || update.isEmpty()) {
+            return ResponseEntity.badRequest().body("Los datos no pueden estar vacíos.");
+        }
+
+        String avatarUrl = update.get("avatarUrl");
+
+        if (avatarUrl == null) {
+            return ResponseEntity.badRequest().body("Debes proporcionar la url del avatar.");
+        }
+
+        String usernameAuth = authentication.getName();
+        Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
+
+        usuario.setAvatarUrl(avatarUrl);
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Avatar actualizado");
+    }
+
 }

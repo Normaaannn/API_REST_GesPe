@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>GesPeSpring</name>
     <description>Demo project for Spring Boot</description>
+    <packaging>jar</packaging>
     <url/>
     <licenses>
         <license/>
@@ -44,8 +45,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
