@@ -14,8 +14,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TresUltimosDTO {
+public class DatosHome {
     
+    private float total;
     private List<Pedido> pedidos;
     private List<Cliente> clientes;
     private List<Producto> productos;

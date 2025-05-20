@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequestMapping("/producto")
@@ -33,7 +34,7 @@ public class ProductoController {
 
     @GetMapping("/activos/page/{pagina}")
     public Page<Producto> obtenerProductosActivos(@PathVariable int pagina, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(pagina, size);
+        Pageable pageable = PageRequest.of(pagina - 1, size, Sort.by("id").descending());
         return productoService.obtenerProductosActivosPaginados(pageable);
     }
 

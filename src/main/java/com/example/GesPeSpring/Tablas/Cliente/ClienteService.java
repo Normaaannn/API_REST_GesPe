@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class ClienteService {
@@ -19,7 +20,7 @@ public class ClienteService {
     }
 
     public Page<Cliente> obtenerClientesPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return clienteRepository.findAll(pageable);
     }
 
@@ -28,22 +29,22 @@ public class ClienteService {
     }
     
     public Page<Cliente> obtenerClientesInactivosPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return clienteRepository.findByActivoFalse(pageable);
     }
 
     public Page<Cliente> buscarClientes(String texto, int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return clienteRepository.buscarPorParametro(texto, pageable);
     }
     
     public Page<Cliente> buscarClientesActivos(String texto, int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return clienteRepository.buscarPorParametroAndActivo(texto, pageable);
     }
     
     public Page<Cliente> buscarClientesInactivos(String texto, int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return clienteRepository.buscarPorParametroAndInactivo(texto, pageable);
     }
 

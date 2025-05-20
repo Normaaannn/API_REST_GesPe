@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -30,7 +31,7 @@ public class ClienteController {
 
     @GetMapping("activos/page/{pagina}")
     public Page<Cliente> obtenerClientesActivos(@PathVariable int pagina, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(pagina, size);
+        Pageable pageable = PageRequest.of(pagina - 1, size, Sort.by("id").descending());
         return clienteService.obtenerClientesActivosPaginados(pageable);
     }
 

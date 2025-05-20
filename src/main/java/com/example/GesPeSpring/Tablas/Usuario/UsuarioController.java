@@ -1,17 +1,13 @@
 package com.example.GesPeSpring.Tablas.Usuario;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -98,14 +94,24 @@ public class UsuarioController {
 
     @PatchMapping("/{id}/banear")
     public ResponseEntity<String> quitarRolUsuario(@PathVariable Long id) {
-        usuarioRepository.banearUsuario(id);
-        return ResponseEntity.ok("Usuario baneado correctamente");
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        if (!usuario.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            usuarioRepository.banearUsuario(id);
+            return ResponseEntity.ok("Usuario baneado correctamente");
+        } else {
+            return ResponseEntity.ok("No se puede banear a un administrador");
+        }
     }
 
     @PatchMapping("/{id}/darRolUsuario")
     public ResponseEntity<String> darRolUsuario(@PathVariable Long id) {
-        usuarioRepository.darRolUsuario(id);
-        return ResponseEntity.ok("Usuario activado correctamente");
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        if (!usuario.getRole().equalsIgnoreCase("ROLE_ADMIN")) {
+            usuarioRepository.darRolUsuario(id);
+            return ResponseEntity.ok("Usuario activado correctamente");
+        } else {
+            return ResponseEntity.ok("No se puede degradar a un administrador");
+        }
     }
 
     @PatchMapping("/actualizarPassword")
@@ -200,12 +206,12 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Avatar actualizado");
     }
-    
+
     @GetMapping("/obtenerAvatar")
     public ResponseEntity<String> obtenerAvatar(Authentication authentication) {
         String usernameAuth = authentication.getName();
         Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
-        
+
         return ResponseEntity.ok(usuario.getAvatarUrl());
     }
 

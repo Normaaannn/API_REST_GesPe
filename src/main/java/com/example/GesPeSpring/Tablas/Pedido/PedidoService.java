@@ -72,6 +72,11 @@ public class PedidoService {
 
         return pedidoRepository.findByUsuarioCreadorAndFechaBetween(username, startDate, endDate, pageable);
     }
+    
+    public float obtenerSumaTotalPedidosPorMes(int year, int month) {
+        float total = pedidoRepository.sumarTotalMonthAndYear(year, month);
+        return total;
+    }
 
     public Pedido crearPedido(Pedido pedido) {
         return pedidoRepository.save(pedido);

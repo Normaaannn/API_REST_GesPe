@@ -7,12 +7,12 @@ import com.example.GesPeSpring.Tablas.Pedido.PedidoService;
 import com.example.GesPeSpring.Tablas.Producto.Producto;
 import com.example.GesPeSpring.Tablas.Producto.ProductoService;
 import com.example.GesPeSpring.Tablas.Usuario.UsuarioRepository;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,12 +38,12 @@ public class MiscController {
     @Autowired
     private ProductoService productoService;
 
-    @GetMapping("/tresUltimos")
-    public TresUltimosDTO obtenerTresUltimos(Authentication authentication) {
+    @GetMapping("/datosHome")
+    public DatosHome datosHome(Authentication authentication) {
 
         String username = authentication.getName();
-        Pageable pageable = PageRequest.of(0, 3);
-        
+        Pageable pageable = PageRequest.of(0, 3, Sort.by("id").descending());
+
         Page<Pedido> pedidos;
         //Si es admin, le devuelve todos
         if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
@@ -54,12 +54,14 @@ public class MiscController {
 
         Page<Cliente> clientes = clienteService.obtenerClientesActivosPaginados(pageable);
         Page<Producto> productos = productoService.obtenerProductosActivosPaginados(pageable);
-        
-        TresUltimosDTO tresUltimos = new TresUltimosDTO();
-        tresUltimos.setPedidos(pedidos.getContent());
-        tresUltimos.setClientes(clientes.getContent());
-        tresUltimos.setProductos(productos.getContent());
-        
-        return tresUltimos;
+        float total = pedidoService.obtenerSumaTotalPedidosPorMes(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+
+        DatosHome datosHome = new DatosHome();
+        datosHome.setTotal(total);
+        datosHome.setPedidos(pedidos.getContent());
+        datosHome.setClientes(clientes.getContent());
+        datosHome.setProductos(productos.getContent());
+
+        return datosHome;
     }
 }

@@ -62,7 +62,7 @@ public class PedidoController {
             @RequestParam(defaultValue = "10") int size) {
 
         String username = authentication.getName();
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
         //Si es admin, le devuelve todos
         if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
             Page<Pedido> pedidos = pedidoService.obtenerTodosPageable(pageable);
@@ -125,7 +125,7 @@ public class PedidoController {
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
         List<PedidoDetalleDTO> detalles = pedidoDetalleService.obtenerDetallesDTOporPedido(id);
         InfoEmpresa empresa = infoEmpresaService.obtenerInfoEmpresa()
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
         byte[] pdf = pedidoService.generarPdfFactura(pedido, detalles, empresa);
 

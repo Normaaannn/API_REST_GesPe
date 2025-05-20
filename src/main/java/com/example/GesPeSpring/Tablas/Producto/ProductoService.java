@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class ProductoService {
     }
 
     public Page<Producto> obtenerProductosPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return productoRepository.findAll(pageable);
     }
     
@@ -32,13 +33,13 @@ public class ProductoService {
     }
     
     public Page<Producto> obtenerProductosInactivosPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+        Pageable pageable = PageRequest.of(pagina, 10, Sort.by("id").descending());
         return productoRepository.findByActivoFalse(pageable);
     }
 
     public Page<ProductoDTO> buscarProductos(String texto, int page) {
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Producto> productos = productoRepository.buscarPorNombre(texto, pageable);
 
@@ -52,7 +53,7 @@ public class ProductoService {
 
     public Page<ProductoDTO> buscarProductosActivos(String texto, int page) {
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Producto> productos = productoRepository.buscarPorNombreAndActivo(texto, pageable);
 
@@ -66,7 +67,7 @@ public class ProductoService {
 
     public Page<ProductoDTO> buscarProductosInactivos(String texto, int page) {
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Producto> productos = productoRepository.buscarPorNombreAndInactivo(texto, pageable);
 
