@@ -200,5 +200,13 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Avatar actualizado");
     }
+    
+    @GetMapping("/obtenerAvatar")
+    public ResponseEntity<String> obtenerAvatar(Authentication authentication) {
+        String usernameAuth = authentication.getName();
+        Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
+        
+        return ResponseEntity.ok(usuario.getAvatarUrl());
+    }
 
 }

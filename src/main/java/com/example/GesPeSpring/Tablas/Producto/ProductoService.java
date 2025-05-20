@@ -27,8 +27,7 @@ public class ProductoService {
         return productoRepository.findAll(pageable);
     }
     
-    public Page<Producto> obtenerProductosActivosPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+    public Page<Producto> obtenerProductosActivosPaginados(Pageable pageable) {
         return productoRepository.findByActivoTrue(pageable);
     }
     

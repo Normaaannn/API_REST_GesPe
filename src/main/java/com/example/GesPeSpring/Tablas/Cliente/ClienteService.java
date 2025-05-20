@@ -23,8 +23,7 @@ public class ClienteService {
         return clienteRepository.findAll(pageable);
     }
 
-    public Page<Cliente> obtenerClientesActivosPaginados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 10);
+    public Page<Cliente> obtenerClientesActivosPaginados(Pageable pageable) {
         return clienteRepository.findByActivoTrue(pageable);
     }
     

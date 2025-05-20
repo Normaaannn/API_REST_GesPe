@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/producto")
@@ -30,8 +32,9 @@ public class ProductoController {
     }
 
     @GetMapping("/activos/page/{pagina}")
-    public Page<Producto> obtenerProductosActivos(@PathVariable int pagina) {
-        return productoService.obtenerProductosActivosPaginados(pagina - 1);
+    public Page<Producto> obtenerProductosActivos(@PathVariable int pagina, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(pagina, size);
+        return productoService.obtenerProductosActivosPaginados(pageable);
     }
 
     @GetMapping("/inactivos/page/{pagina}")

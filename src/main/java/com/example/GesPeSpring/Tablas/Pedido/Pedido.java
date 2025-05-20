@@ -3,6 +3,7 @@ package com.example.GesPeSpring.Tablas.Pedido;
 
 import com.example.GesPeSpring.Tablas.Cliente.Cliente;
 import com.example.GesPeSpring.Tablas.Usuario.Usuario;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

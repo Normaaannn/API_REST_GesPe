@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -27,8 +29,9 @@ public class ClienteController {
     }
 
     @GetMapping("activos/page/{pagina}")
-    public Page<Cliente> obtenerClientesActivos(@PathVariable int pagina) {
-        return clienteService.obtenerClientesActivosPaginados(pagina - 1);
+    public Page<Cliente> obtenerClientesActivos(@PathVariable int pagina, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(pagina, size);
+        return clienteService.obtenerClientesActivosPaginados(pageable);
     }
 
     @GetMapping("inactivos/page/{pagina}")
