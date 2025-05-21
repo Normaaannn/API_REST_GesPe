@@ -58,16 +58,6 @@ public class ProductoController {
         return productoService.buscarProductos(texto, page - 1);
     }
 
-    // Obtener un producto por su ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> obtenerProducto(@PathVariable Long id) {
-        Producto producto = productoService.obtenerProductoPorId(id);
-        if (producto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(producto);
-    }
-
     @PatchMapping("/{id}")
     public String actualizarParcialProducto(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         Producto producto = productoRepository.findById(id)

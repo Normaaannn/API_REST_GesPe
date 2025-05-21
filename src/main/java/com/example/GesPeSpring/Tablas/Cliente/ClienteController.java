@@ -55,11 +55,6 @@ public class ClienteController {
         return clienteService.buscarClientesInactivos(texto, page - 1);
     }
 
-    @GetMapping("/{id}")
-    public Optional<Cliente> obtenerCliente(@PathVariable Long id) {
-        return clienteService.obtenerClientePorId(id);
-    }
-
     @PostMapping
     public String crearCliente(@RequestBody Cliente cliente) {
 

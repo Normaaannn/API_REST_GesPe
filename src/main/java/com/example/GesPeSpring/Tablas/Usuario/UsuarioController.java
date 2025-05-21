@@ -66,12 +66,12 @@ public class UsuarioController {
 
         //Verificar si el correo ya esta registrado
         if (usuarioRepository.findByEmail(usuario.getEmail()) != null || usuario.getEmail().isBlank() || usuario.getEmail() == null) {
-            return "Correo existe";
+            return "El correo electrónico ya existe";
         }
 
         //Verificar si el nombre de usuario ya esta registrado
         if (usuarioRepository.findByUsername(usuario.getUsername()) != null || usuario.getUsername().isBlank() || usuario.getUsername() == null) {
-            return "Usuario existe";
+            return "El usuario ya existe";
         }
 
         //Verificar si la contraseña es nula o vacia
@@ -164,7 +164,7 @@ public class UsuarioController {
         user.setTokenExpiration(LocalDateTime.now().plusHours(1));
         usuarioRepository.save(user);
 
-        String resetLink = "http://localhost:8080/reset-password?token=" + token;
+        String resetLink = "http://localhost:8100/reset-password?token=" + token + "\n\n" + "Token para introducir manualmente: " + token;
         emailService.sendResetLink(dto.getEmail(), resetLink);
 
         return ResponseEntity.ok("Link de recuperación enviado");

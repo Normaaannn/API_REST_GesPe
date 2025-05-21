@@ -43,18 +43,6 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Pedido> obtenerPorId(@PathVariable Long id) {
-        return pedidoService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/cliente/{clienteId}")
-    public List<Pedido> obtenerPorCliente(@PathVariable Long clienteId) {
-        return pedidoService.obtenerPorCliente(clienteId);
-    }
-
     @GetMapping("/usuarioCreador/{page}")
     public ResponseEntity<Page<Pedido>> obtenerPorUsuarioCreador(
             Authentication authentication,
@@ -72,7 +60,7 @@ public class PedidoController {
 
         return ResponseEntity.ok(pedidos);
     }
-    
+
     @GetMapping("/buscar")
     public ResponseEntity<Page<Pedido>> buscarPedidos(
             Authentication authentication,
@@ -88,12 +76,11 @@ public class PedidoController {
         if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
             Page<Pedido> pedidos = pedidoService.buscarPedidosFechaBetween(pageable, year1, month1, year2, month2);
             return ResponseEntity.ok(pedidos);
-        }       
+        }
         Page<Pedido> pedidos = pedidoService.buscarPedidosUsuarioFechaBetween(pageable, username, year1, month1, year2, month2);
         return ResponseEntity.ok(pedidos);
     }
 
-    
     /*
     ///pedido/fechaBetween?year1=2023&month1=10&year2=2025&month2=5
     @GetMapping("/fechaBetween")
@@ -106,7 +93,6 @@ public class PedidoController {
         List<Pedido> pedidos = pedidoService.buscarPedidosFechaBetween(year1, month1, year2, month2);
         return ResponseEntity.ok(pedidos);
     }*/
-
     @PostMapping
     public ResponseEntity<Long> crearPedido(@RequestBody Pedido pedido, Authentication authentication) {
 
