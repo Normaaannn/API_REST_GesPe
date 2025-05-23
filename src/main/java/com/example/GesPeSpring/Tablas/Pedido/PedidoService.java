@@ -2,24 +2,17 @@ package com.example.GesPeSpring.Tablas.Pedido;
 
 import com.example.GesPeSpring.Tablas.InfoEmpresa.InfoEmpresa;
 import com.example.GesPeSpring.Tablas.Pedido.Pedido;
-import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalle;
 import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleDTO;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Base64;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -87,8 +80,6 @@ public class PedidoService {
     public byte[] generarPdfFactura(Pedido pedido, List<PedidoDetalleDTO> pedidoDetalles, InfoEmpresa empresa) throws Exception {
         Context context = new Context();
         //Ruta absoluta al archivo logo.jpg dentro de templates
-        byte[] logoBytes = Files.readAllBytes(Paths.get("src/main/resources/templates/logo.jpg"));
-        String logoBase64 = Base64.getEncoder().encodeToString(logoBytes);
 
         //Saco el total neto y de impuestos del pedido entero
         BigDecimal totalNeto = BigDecimal.ZERO;
@@ -115,7 +106,6 @@ public class PedidoService {
             totalIVA = totalIVA.add(ivaCalculado);
         }
 
-        context.setVariable("logoBase64", logoBase64);
         context.setVariable("pedido", pedido);
         context.setVariable("pedidoDetalles", pedidoDetalles);
         context.setVariable("empresa", empresa);

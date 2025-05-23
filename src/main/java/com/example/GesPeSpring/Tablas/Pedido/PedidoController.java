@@ -43,7 +43,7 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
-    @GetMapping("/usuarioCreador/{page}")
+    @GetMapping("/usuarioCreador/page/{page}")
     public ResponseEntity<Page<Pedido>> obtenerPorUsuarioCreador(
             Authentication authentication,
             @PathVariable int page,
