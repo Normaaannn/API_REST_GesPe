@@ -1,6 +1,7 @@
 
 package com.example.GesPeSpring.Tablas.PedidoDetalle;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +14,9 @@ public class PedidoDetalleDTO {
     
     private String nombreProducto;
     private String descripcion;
-    private float iva;
-    private float precio;
-    private int cantidad;
-    private float subtotal;
+    private BigDecimal iva;
+    private BigDecimal precio;
+    private BigDecimal cantidad;
+    private BigDecimal subtotal;
     
 }

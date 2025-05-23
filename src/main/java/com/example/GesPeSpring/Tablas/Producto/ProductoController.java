@@ -50,12 +50,12 @@ public class ProductoController {
 
     @GetMapping("/buscar/activos/{texto}/page/{page}")
     public Page<ProductoDTO> buscarProductosActivos(@PathVariable String texto, @PathVariable int page) {
-        return productoService.buscarProductos(texto, page - 1);
+        return productoService.buscarProductosActivos(texto, page - 1);
     }
 
     @GetMapping("/buscar/inactivos/{texto}/page/{page}")
     public Page<ProductoDTO> buscarProductosInactivos(@PathVariable String texto, @PathVariable int page) {
-        return productoService.buscarProductos(texto, page - 1);
+        return productoService.buscarProductosInactivos(texto, page - 1);
     }
 
     @PatchMapping("/{id}")

@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +30,13 @@ public class Producto {
     private String descripcion;
 
     @Column(nullable = false)
-    private float precioNeto;
+    private BigDecimal precioNeto;
 
     @Column(nullable = false)
-    private float iva;
+    private BigDecimal iva;
 
     @Column(nullable = false)
-    private float precioBruto;
+    private BigDecimal precioBruto;
 
     @Column(updatable = false)
     private LocalDate fechaRegistro;
@@ -45,12 +47,23 @@ public class Producto {
     @PrePersist
     protected void onCreate() {
         this.fechaRegistro = LocalDate.now();  //Establece la fecha actual (solo año, mes y día)
-        this.precioBruto = this.precioNeto * (1 + (this.iva / 100));
+        calcularPrecioBruto();
         this.activo = true;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.precioBruto = this.precioNeto * (1 + (this.iva / 100));
+        calcularPrecioBruto();
+    }
+    
+    private void calcularPrecioBruto() {
+        if (precioNeto != null && iva != null) {
+            BigDecimal multiplicadorIVA = iva.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+                                             .add(BigDecimal.ONE);
+            this.precioBruto = precioNeto.multiply(multiplicadorIVA)
+                                         .setScale(2, RoundingMode.HALF_UP);
+        } else {
+            this.precioBruto = BigDecimal.ZERO;
+        }
     }
 }

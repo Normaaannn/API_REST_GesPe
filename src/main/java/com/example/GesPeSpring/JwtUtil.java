@@ -9,9 +9,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //Key aleatoria cada vez que se reinicia la API
     private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000; //15 minutos
-    private final long REFRESH_TOKEN_EXPIRATION = 20 * 24 * 60 * 60 * 1000; //30 dias
+    private final long REFRESH_TOKEN_EXPIRATION = 20 * 24 * 60 * 60 * 1000; //20 dias
 
     //Generar Access Token
     public String generateAccessToken(String username, String role) {
@@ -62,7 +62,7 @@ public class JwtUtil {
             Jwts.parser()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token); // Verifica la firma del token
+                    .parseClaimsJws(token); //Verifica la firma del token
             return true;
         } catch (JwtException e) {
             System.out.println("Token inválido: " + e.getMessage());
