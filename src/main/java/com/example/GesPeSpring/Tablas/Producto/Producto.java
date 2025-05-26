@@ -24,18 +24,19 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String nombre;
 
+    @Column(length = 200)
     private String descripcion;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal precioNeto;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 2)
     private BigDecimal iva;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal precioBruto;
 
     @Column(updatable = false)

@@ -38,7 +38,7 @@ public class Pedido {
     @Column(nullable = false, updatable = false)
     private LocalDate fechaEmision;
     
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, precision = 50, scale = 2)
     private BigDecimal total;
     
     @ManyToOne

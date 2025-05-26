@@ -35,13 +35,13 @@ public class PedidoDetalle {
     @JoinColumn(name = "idProducto", nullable = false)
     private Producto producto;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal precioNeto;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal cantidad;
 
-    @Column(nullable = true)
+    @Column(nullable = true, precision = 24, scale = 2)
     private BigDecimal subtotal;
 
     @PrePersist
