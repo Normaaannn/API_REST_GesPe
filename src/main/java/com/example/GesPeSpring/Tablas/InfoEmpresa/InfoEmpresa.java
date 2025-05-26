@@ -41,6 +41,6 @@ public class InfoEmpresa {
     private String codigoPostal;
     private String pais;
     
-    private String logo;
+    private String logoUrl;
     
 }

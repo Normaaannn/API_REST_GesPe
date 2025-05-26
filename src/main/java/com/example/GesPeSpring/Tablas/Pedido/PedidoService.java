@@ -89,19 +89,19 @@ public class PedidoService {
             BigDecimal subtotal = detalle.getSubtotal();
             BigDecimal iva = detalle.getIva();
 
-            // ivaDecimal = iva / 100
+            //ivaDecimal = iva / 100
             BigDecimal ivaDecimal = iva.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 
-            // divisor = 1 + (iva / 100)
+            //divisor = 1 + (iva / 100)
             BigDecimal divisor = BigDecimal.ONE.add(ivaDecimal);
 
-            // neto = subtotal / (1 + iva/100)
+            //neto = subtotal / (1 + iva/100)
             BigDecimal neto = subtotal.divide(divisor, 2, RoundingMode.HALF_UP);
 
-            // ivaCalculado = subtotal - neto
+            //ivaCalculado = subtotal - neto
             BigDecimal ivaCalculado = subtotal.subtract(neto);
 
-            // Sumar a totales
+            //Sumar a totales
             totalNeto = totalNeto.add(neto);
             totalIVA = totalIVA.add(ivaCalculado);
         }

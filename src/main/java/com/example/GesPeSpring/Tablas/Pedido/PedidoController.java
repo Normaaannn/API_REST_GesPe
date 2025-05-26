@@ -106,19 +106,28 @@ public class PedidoController {
 
     //factura
     @GetMapping("/factura/{id}/pdf")
-    public ResponseEntity<byte[]> generarFactura(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Object> generarFactura(@PathVariable Long id, Authentication authentication) throws Exception {
         Pedido pedido = pedidoService.obtenerPorId(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-        List<PedidoDetalleDTO> detalles = pedidoDetalleService.obtenerDetallesDTOporPedido(id);
-        InfoEmpresa empresa = infoEmpresaService.obtenerInfoEmpresa()
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        //Comprobar que el pedido sea del usuario o sea admin
+        String usernameAuth = authentication.getName();
+        Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
 
-        byte[] pdf = pedidoService.generarPdfFactura(pedido, detalles, empresa);
+        if (pedido.getUsuarioCreador().getId().equals(usuario.getId()) || authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=factura-" + id + ".pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdf);
+            List<PedidoDetalleDTO> detalles = pedidoDetalleService.obtenerDetallesDTOporPedido(id);
+            InfoEmpresa empresa = infoEmpresaService.obtenerInfoEmpresa()
+                    .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+            byte[] pdf = pedidoService.generarPdfFactura(pedido, detalles, empresa);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=factura-" + id + ".pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdf);
+        } else {
+            return ResponseEntity.badRequest().body("Acceso al pedido denegado");
+        }
     }
-
+    
 }

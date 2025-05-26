@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,36 @@ public class InfoEmpresaController {
             return "Error actualizando información: " + e.getMessage();  // Si hay error, se devuelve un mensaje de error
         }
     }
-    
+
+    @PatchMapping("/actualizarLogo")
+    public ResponseEntity<String> actualizarLogo(@RequestBody Map<String, String> update) {
+
+        if (update == null || update.isEmpty()) {
+            return ResponseEntity.badRequest().body("Los datos no pueden estar vacíos.");
+        }
+
+        String logoUrl = update.get("logoUrl");
+
+        if (logoUrl == null) {
+            return ResponseEntity.badRequest().body("Debes proporcionar la url del logo.");
+        }
+
+        InfoEmpresa infoEmpresa = infoEmpresaService.obtenerInfoEmpresa()
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        infoEmpresa.setLogoUrl(logoUrl);
+        infoEmpresaRepository.save(infoEmpresa);
+        return ResponseEntity.ok("Logo actualizado");
+    }
+
+    @GetMapping("/obtenerLogo")
+    public ResponseEntity<String> obtenerLogo() {
+        InfoEmpresa infoEmpresa = infoEmpresaService.obtenerInfoEmpresa()
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        return ResponseEntity.ok(infoEmpresa.getLogoUrl());
+    }
+
     @GetMapping("/{id}")
     public Optional<InfoEmpresa> obtenerInfoEmpresaPorId(@PathVariable Long id) {
         return infoEmpresaRepository.findById(id);
