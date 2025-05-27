@@ -69,7 +69,12 @@ public class PedidoService {
     }
 
     public float obtenerSumaTotalPedidosPorMes(int year, int month) {
-        float total = pedidoRepository.sumarTotalMonthAndYear(year, month);
+        float total = pedidoRepository.sumarTotalFecha(year, month);
+        return total;
+    }
+    
+    public float obtenerSumaTotalPedidosPorMesUsername(int year, int month, String username) {
+        float total = pedidoRepository.sumarTotalFechaUsuario(year, month, username);
         return total;
     }
 

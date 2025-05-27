@@ -45,16 +45,18 @@ public class MiscController {
         Pageable pageable = PageRequest.of(0, 3, Sort.by("id").descending());
 
         Page<Pedido> pedidos;
+        float total;
         //Si es admin, le devuelve todos
         if (authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
             pedidos = pedidoService.obtenerTodosPageable(pageable);
+            total = pedidoService.obtenerSumaTotalPedidosPorMes(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
         } else {
             pedidos = pedidoService.obtenerPorUsuarioCreador(username, pageable);
+            total = pedidoService.obtenerSumaTotalPedidosPorMesUsername(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), username);
         }
 
         Page<Cliente> clientes = clienteService.obtenerClientesActivosPaginados(pageable);
         Page<Producto> productos = productoService.obtenerProductosActivosPaginados(pageable);
-        float total = pedidoService.obtenerSumaTotalPedidosPorMes(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
 
         DatosHome datosHome = new DatosHome();
         datosHome.setTotal(total);

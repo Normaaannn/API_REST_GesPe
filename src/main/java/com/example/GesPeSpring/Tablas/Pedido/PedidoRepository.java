@@ -24,8 +24,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     @Query("SELECT p FROM Pedido p WHERE YEAR(p.fechaEmision) = :year AND MONTH(p.fechaEmision) = :month")
     List<Pedido> findByMonthAndYear(@Param("year") int year, @Param("month") int month);
 
-    @Query("SELECT SUM(p.total) FROM Pedido p WHERE YEAR(p.fechaEmision) = :year AND MONTH(p.fechaEmision) = :month")
-    float sumarTotalMonthAndYear(@Param("year") int year, @Param("month") int month);
+    @Query("SELECT COALESCE(SUM(p.total), 0) FROM Pedido p WHERE YEAR(p.fechaEmision) = :year AND MONTH(p.fechaEmision) = :month")
+    float sumarTotalFecha(@Param("year") int year, @Param("month") int month);
+    
+    @Query("SELECT COALESCE(SUM(p.total), 0) FROM Pedido p WHERE YEAR(p.fechaEmision) = :year AND MONTH(p.fechaEmision) = :month AND p.usuarioCreador.username = :username")
+    float sumarTotalFechaUsuario(@Param("year") int year, @Param("month") int month, @Param("username") String username);
 
     @Query("SELECT p FROM Pedido p WHERE p.fechaEmision BETWEEN :startDate AND :endDate")
     Page<Pedido> findByFechaBetween(
