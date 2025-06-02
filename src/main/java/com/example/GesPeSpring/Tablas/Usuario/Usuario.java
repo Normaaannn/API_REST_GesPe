@@ -3,6 +3,7 @@ package com.example.GesPeSpring.Tablas.Usuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,9 +33,19 @@ public class Usuario {
     @Column(length = 2083)
     private String avatarUrl;
     
+    @Column(updatable = false)
+    private LocalDate fechaRegistro;
+    
     //Tokens para reiniciar la contraseña
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) //Para que al hacer un GET, no reciba el hash de la contraseña
     private String resetToken;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) //Para que al hacer un GET, no reciba el hash de la contraseña
     private LocalDateTime tokenExpiration;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.fechaRegistro = LocalDate.now();  //Establece la fecha actual (solo año, mes y día)
+    }
     
 }
 
