@@ -2,7 +2,7 @@
 
 **API REST para gestión de pedidos – desarrollada con Spring Boot**
 
-Este es el backend del sistema *GESPE* (Gestor de Pedidos), una aplicación de gestión de pedidos con interfaz en español.  
+Este es el backend del sistema *GesPe* (Gestor de Pedidos), una aplicación de gestión de pedidos con interfaz en español.  
 Proporciona una API RESTful construida con **Spring Boot**, utilizando entidades, rutas y estructuras de datos en **español** para mantener coherencia con el frontend en Ionic Angular.
 
 ---
@@ -11,7 +11,7 @@ Proporciona una API RESTful construida con **Spring Boot**, utilizando entidades
 
 - 📄 API RESTful con operaciones CRUD completas  
 - 🧾 Entidades con nombres en español (`Pedido`, `Cliente`, `Producto`, etc.)  
-- 🛡️ Lista para autenticación y autorización (JWT o Basic Auth)  
+- 🛡️ Lista para autenticación (JWT)  
 - 🗄️ Integración con JPA/Hibernate y base de datos relacional  
 - 🌍 CORS configurado para integración con frontend
 
@@ -33,7 +33,7 @@ Proporciona una API RESTful construida con **Spring Boot**, utilizando entidades
 - **Spring Security** (opcional)  
 - **H2 / MySQL / PostgreSQL** (configurable)  
 - **Maven / Gradle**  
-- **Java 17 o superior**
+- **Java 21 o superior**
 
 ---
 
