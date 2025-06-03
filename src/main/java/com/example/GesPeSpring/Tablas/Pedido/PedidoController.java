@@ -4,6 +4,7 @@ import com.example.GesPeSpring.Tablas.InfoEmpresa.InfoEmpresa;
 import com.example.GesPeSpring.Tablas.InfoEmpresa.InfoEmpresaService;
 import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleDTO;
 import com.example.GesPeSpring.Tablas.PedidoDetalle.PedidoDetalleService;
+import com.example.GesPeSpring.Tablas.Usuario.EmailService;
 import com.example.GesPeSpring.Tablas.Usuario.Usuario;
 import com.example.GesPeSpring.Tablas.Usuario.UsuarioRepository;
 import java.util.List;
@@ -38,6 +39,9 @@ public class PedidoController {
 
     @Autowired
     private InfoEmpresaService infoEmpresaService;
+    
+    @Autowired
+    private EmailService emailService;
 
     public PedidoController(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
@@ -129,5 +133,34 @@ public class PedidoController {
             return ResponseEntity.badRequest().body("Acceso al pedido denegado");
         }
     }
-    
+
+    @PostMapping("/enviarFacturaClienteEmail/{id}")
+    public String enviarFacturaClienteEmail(@PathVariable Long id, Authentication authentication) throws Exception {
+        Pedido pedido = pedidoService.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        //Comprobar que el pedido sea del usuario o sea admin
+        String usernameAuth = authentication.getName();
+        Usuario usuario = usuarioRepository.findByUsername(usernameAuth);
+
+        if (pedido.getUsuarioCreador().getId().equals(usuario.getId()) || authentication.getAuthorities().iterator().next().getAuthority().equals("ROLE_ADMIN")) {
+
+            List<PedidoDetalleDTO> detalles = pedidoDetalleService.obtenerDetallesDTOporPedido(id);
+            InfoEmpresa empresa = infoEmpresaService.obtenerInfoEmpresa()
+                    .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+            byte[] pdf = pedidoService.generarPdfFactura(pedido, detalles, empresa);
+
+            emailService.enviarFacturaPorCorreo(
+                    pedido.getCliente().getEmail(),
+                    "Factura de pedido #" + pedido.getId(),
+                    "<p>Adjunto encontrará su factura.</p>",
+                    pdf,
+                    "factura_" + pedido.getId() + ".pdf"
+            );
+
+            return "Factura enviada correctamente";
+        } else{
+            return "Acceso al pedido denegado";
+        }
+    }
 }
