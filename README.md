@@ -38,6 +38,13 @@ Proporciona una API RESTful construida con **Spring Boot**, utilizando entidades
 
 ---
 
+
+## 🧾 Factura
+
+![Factura](screenshots/factura.png)
+
+---
+
 ## 🧪 Cómo ejecutar
 
 ```bash
@@ -51,8 +58,3 @@ cd gespe-api
 # O, usando Gradle
 ./gradlew bootRun
 
----
-
-## 🧾 Factura
-
-![Factura](screenshots/factura.png)
