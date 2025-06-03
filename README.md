@@ -14,6 +14,7 @@ Proporciona una API RESTful construida con **Spring Boot**, utilizando entidades
 - 🛡️ Lista para autenticación (JWT)  
 - 🗄️ Integración con JPA/Hibernate y base de datos relacional  
 - 🌍 CORS configurado para integración con frontend
+- 🧾 Generación de facturas en formato PDF  
 
 ---
 
@@ -49,3 +50,9 @@ cd gespe-api
 
 # O, usando Gradle
 ./gradlew bootRun
+
+---
+
+## 🧾 Factura
+
+![Factura](screenshots/factura.png)
